@@ -1,10 +1,11 @@
 const express = require("express");
-const path = require("path");
-const db = require("./config/connection");
 const { ApolloServer } = require("apollo-server-express");
+const { authMiddleware } = require("./utils/auth");
+const path = require("path");
 
 // import our typeDefs and resolvers
 const { typeDefs, resolvers } = require("./schemas");
+const db = require("./config/connection");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -12,8 +13,10 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => req.headers
 });
+
+// integrate our Apollo server with the Express application as middleware
+server.applyMiddleware({ app });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -22,9 +25,6 @@ app.use(express.json());
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
 }
-
-// integrate our Apollo server with the Express application as middleware
-server.applyMiddleware({ app });
 
 // app.use(routes);
 
