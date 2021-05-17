@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 import ApolloClient from "apollo-boost";
 import SearchBooks from "./pages/SearchBooks";
 import SavedBooks from "./pages/SavedBooks";
 import Navbar from "./components/Navbar";
+import { useQuery } from "@apollo/react-hooks";
+import { QUERY_ME } from "./utils/queries";
 
 const client = new ApolloClient({
   request: (operation) => {
@@ -20,6 +22,10 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const { loading, data, refetch } = useQuery(QUERY_ME);
+
+  const [userData, setUserData] = useState(data?.me || {});
+  console.log(userData);
   return (
     <ApolloProvider client={client}>
       <Router>

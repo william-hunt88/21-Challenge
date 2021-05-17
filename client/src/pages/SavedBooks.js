@@ -14,15 +14,22 @@ import { removeBookId } from "../utils/localStorage";
 import { REMOVE_BOOK } from "../utils/mutations";
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(QUERY_ME);
+  const { loading, data, refetch } = useQuery(QUERY_ME);
   
   const userData = data?.me || {}
   const [deleteBook] = useMutation(REMOVE_BOOK);
   // const [userData, setUserData] = useState({});
   // const { data: userData } = useQuery(GET_ME)
 
+  if(!loading && userData) {
+    console.log(userData)
+  }
+
+ 
   // useEffect(() => {
-  //   setUserData(dbUser)
+  //   if(!loading && user) {
+  //     setUserData(user)
+  //   }
   // })
   
   
@@ -72,6 +79,8 @@ const SavedBooks = () => {
         throw new Error("something went wrong!");
       }
 
+      console.log(data.removeBook)
+
       // const updatedUser = await response.json();
       // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
@@ -118,7 +127,7 @@ const SavedBooks = () => {
                   <Card.Text>{book.description}</Card.Text>
                   <Button
                     className="btn-block btn-danger"
-                    onClick={() => handleDeleteBook(book.bookId)}
+                    onClick={() => handleDeleteBook(book.bookId) && refetch()}
                   >
                     Delete this Book!
                   </Button>
