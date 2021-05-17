@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useParams } from "react";
 import {
   Jumbotron,
   Container,
@@ -17,7 +17,7 @@ const SavedBooks = () => {
   const { loading, data } = useQuery(QUERY_ME);
   
   const userData = data?.me || {}
-  const deleteBook = useMutation(REMOVE_BOOK);
+  const [deleteBook] = useMutation(REMOVE_BOOK);
   // const [userData, setUserData] = useState({});
   // const { data: userData } = useQuery(GET_ME)
 
@@ -57,20 +57,22 @@ const SavedBooks = () => {
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    // const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    if (!token) {
-      return false;
-    }
+    // if (!token) {
+    //   return false;
+    // }
 
     try {
-      const response = await deleteBook(bookId, token);
+      const {data} = await deleteBook({
+        variables: {bookId: bookId},
+      });
 
-      if (!response.ok) {
+      if (!data) {
         throw new Error("something went wrong!");
       }
 
-      const updatedUser = await response.json();
+      // const updatedUser = await response.json();
       // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
@@ -93,14 +95,14 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userData.savedBooks.length
+          {!loading && userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
               }:`
             : "You have no saved books!"}
         </h2>
         <CardColumns>
-          {userData.savedBooks.map((book) => {
+          {!loading && userData.savedBooks.map((book) => {
             return (
               <Card key={book.bookId} border="dark">
                 {book.image ? (
@@ -116,7 +118,7 @@ const SavedBooks = () => {
                   <Card.Text>{book.description}</Card.Text>
                   <Button
                     className="btn-block btn-danger"
-                    // onClick={() => handleDeleteBook(book.bookId)}
+                    onClick={() => handleDeleteBook(book.bookId)}
                   >
                     Delete this Book!
                   </Button>

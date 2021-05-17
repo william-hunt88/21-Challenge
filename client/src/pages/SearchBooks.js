@@ -69,7 +69,6 @@ const SearchBooks = () => {
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    console.log(bookToSave.bookId);
 
     if (!token) {
       return false;
@@ -86,6 +85,8 @@ const SearchBooks = () => {
           image: bookToSave.image,
         },
       });
+
+      console.log(bookToSave.bookId)
 
       if (!data) {
         throw new Error("something went wrong!");
