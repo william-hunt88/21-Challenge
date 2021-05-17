@@ -24,7 +24,7 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  console.log(savedBookIds)
+  console.log(savedBookIds);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -64,7 +64,6 @@ const SearchBooks = () => {
     }
   };
 
-  // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
@@ -77,7 +76,8 @@ const SearchBooks = () => {
     }
 
     try {
-      const { data } = await saveBook({
+      // execute the SAVE_BOOK mutation
+      await saveBook({
         variables: {
           bookId: bookToSave.bookId,
           authors: bookToSave.authors,
@@ -88,18 +88,51 @@ const SearchBooks = () => {
         },
       });
 
-      console.log(bookToSave.bookId)
-
-      if (!data) {
-        throw new Error("something went wrong!");
-      }
-
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
     }
   };
+
+  // // create function to handle saving a book to our database
+  // const handleSaveBook = async (bookId) => {
+  //   // find the book in `searchedBooks` state by the matching id
+  //   const book = searchedBooks.find((book) => book.bookId === bookId);
+
+  //   // get token
+  //   const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+  //   if (!token) {
+  //     return false;
+  //   }
+
+  //   try {
+  //     await saveBook({
+  //         variables: { book }
+  //       }
+  //       // variables: {
+  //       //   bookId: bookToSave.bookId,
+  //       //   authors: bookToSave.authors,
+  //       //   title: bookToSave.title,
+  //       //   description: bookToSave.description,
+  //       //   link: bookToSave.link,
+  //       //   image: bookToSave.image,
+  //       // },
+  //     );
+
+  //     // console.log(bookToSave.bookId)
+
+  //     // if (!data) {
+  //     //   throw new Error("something went wrong!");
+  //     // }
+
+  //     // if book successfully saves to user's account, save book id to state
+  //     setSavedBookIds([...savedBookIds, book.bookId]);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <>

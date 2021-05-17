@@ -22,10 +22,10 @@ const client = new ApolloClient({
 });
 
 function App() {
-  const { loading, data, refetch } = useQuery(QUERY_ME);
+  // const { loading, data, refetch } = useQuery(QUERY_ME);
 
-  const [userData, setUserData] = useState(data?.me || {});
-  console.log(userData);
+  // const [userData, setUserData] = useState(data?.me || {});
+  // console.log(userData);
   return (
     <ApolloProvider client={client}>
       <Router>

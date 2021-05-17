@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { LOGIN_USER } from "../utils/mutations"
-import { useQuery, useMutation } from "@apollo/react-hooks";
-// import { loginUser } from '../utils/API';
+import { useMutation } from "@apollo/react-hooks";
 import Auth from '../utils/auth';
 
 const LoginForm = () => {
@@ -29,6 +28,8 @@ const LoginForm = () => {
 
     try {
       const { data } = await login({variables: {...userFormData}});
+
+      console.log(data)
 
       Auth.login(data.login.token);
     } catch (err) {
